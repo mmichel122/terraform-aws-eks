@@ -31,9 +31,10 @@ resource "aws_subnet" "public" {
   availability_zone = "${data.aws_availability_zones.available.names[count.index]}"
 
   tags = {
-    Name = "Public_Subnet_${count.index + 1}"
-    Env  = "${var.env}"
-    Type = "Public"
+    Name                     = "Public_Subnet_${count.index + 1}"
+    Type                     = "Public"
+    KubernetesCluster        = "${var.env}"
+    "kubernetes.io/role/elb" = "1"
   }
 }
 
@@ -55,9 +56,9 @@ resource "aws_subnet" "private" {
   availability_zone = "${data.aws_availability_zones.available.names[count.index]}"
 
   tags = {
-    Name = "Private_Subnet_${count.index + 1}"
-    Env  = "${var.env}"
-    Type = "Private"
+    Name              = "Private_Subnet_${count.index + 1}"
+    KubernetesCluster = "${var.env}"
+    Type              = "Private"
   }
 }
 

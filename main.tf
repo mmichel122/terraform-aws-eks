@@ -32,8 +32,8 @@ module "cluster" {
   iam-master-cluster = "${module.security.iam-master-cluster}"
   cluster-name       = "${var.env}"
   master_sg_id       = "${module.network.master_sg_id}"
-  public_subnet_1    = "${module.vpc.public_subnet_1}"
-  public_subnet_2    = "${module.vpc.public_subnet_2}"
+  private_subnet_1   = "${module.vpc.private_subnet_1}"
+  private_subnet_2   = "${module.vpc.private_subnet_2}"
 }
 
 # Create nodes

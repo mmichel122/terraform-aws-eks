@@ -9,7 +9,7 @@ resource "aws_eks_cluster" "kube" {
 
   vpc_config {
     security_group_ids = ["${var.master_sg_id}"]
-    subnet_ids         = ["${var.public_subnet_1}", "${var.public_subnet_2}"]
+    subnet_ids         = ["${var.private_subnet_1}", "${var.private_subnet_2}"]
   }
 }
 

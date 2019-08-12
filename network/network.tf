@@ -79,34 +79,3 @@ resource "aws_security_group_rule" "node-ingress-cluster" {
   to_port                  = 65535
   type                     = "ingress"
 }
-
-/*
-# Node ELB
-resource "aws_elb" "kube-cp" {
-  name            = "node-elb"
-  security_groups = ["${aws_security_group.node_sg.id}"]
-  subnets         = var.public_subnets
-  internal        = true
-
-  listener {
-    instance_port     = 22
-    instance_protocol = "tcp"
-    lb_port           = 22
-    lb_protocol       = "tcp"
-  }
-
-  health_check {
-    healthy_threshold   = 10
-    unhealthy_threshold = 2
-    timeout             = 5
-    target              = "TCP:22"
-    interval            = 30
-  }
-
-  instances                   = var.instance_ids
-  cross_zone_load_balancing   = true
-  idle_timeout                = 400
-  connection_draining         = true
-  connection_draining_timeout = 400
-}
-*/
