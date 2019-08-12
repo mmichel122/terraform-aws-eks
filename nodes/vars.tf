@@ -1,0 +1,11 @@
+variable "iam_instance_profile" {}
+variable "vpc_main_id" {}
+variable "az_count" {}
+variable "cluster-name" {}
+variable "kube-cluster-id" {}
+variable "eks-cluster-version" {}
+variable "eks-cluster-endpoint" {}
+variable "eks-cluster-certificate_authority" {}
+variable "node_key_pair" {}
+variable "private_subnet_1" {}
+variable "private_subnet_2" {}
