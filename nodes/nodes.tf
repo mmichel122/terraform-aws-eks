@@ -27,6 +27,8 @@ locals {
 #!/bin/bash
 set -o xtrace
 /etc/eks/bootstrap.sh --apiserver-endpoint '${var.eks-cluster-endpoint}' --b64-cluster-ca '${var.eks-cluster-certificate_authority}' '${var.cluster-name}'
+yum update -y
+yum install -y amazon-efs-utils
 USERDATA
 }
 

@@ -5,7 +5,7 @@ provider "aws" {
 
 # Create VPC
 module vpc {
-  source   = "./VPC"
+  source   = "./vpc"
   vpc_cidr = "${var.vpc_cidr}"
   env      = "${var.env}"
   az_count = "${var.az_count}"
@@ -50,4 +50,11 @@ module nodes {
   cluster-name                      = "${var.env}"
   private_subnet_1                  = "${module.vpc.private_subnet_1}"
   private_subnet_2                  = "${module.vpc.private_subnet_2}"
+}
+
+# Create EFS File system_packages
+module efs {
+  source        = "./efs"
+  kube_subnet_1 = "${module.vpc.private_subnet_1}"
+  kube_subnet_2 = "${module.vpc.private_subnet_2}"
 }
