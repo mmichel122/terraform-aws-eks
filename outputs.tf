@@ -1,4 +1,4 @@
-output "kubeconfig" {
+output "kubeconfig-auth" {
   value       = module.cluster.kubeconfig
   description = "EKS Kubeconfig"
 }

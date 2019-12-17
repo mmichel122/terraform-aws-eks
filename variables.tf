@@ -13,3 +13,8 @@ variable "az_count" {
 variable "node_key_pair" {
   default = "LinuxAppKey"
 }
+
+variable "profile" {
+  default = "logging"
+}
+

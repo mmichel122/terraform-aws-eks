@@ -16,8 +16,6 @@ resource "aws_eks_cluster" "kube" {
 # kubeconfig file
 locals {
   kubeconfig = <<KUBECONFIG
-
-
 apiVersion: v1
 clusters:
 - cluster:
