@@ -41,7 +41,7 @@ resource "aws_iam_role_policy_attachment" "cluster_AmazonEKSLoadBalancingPolicy"
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSLoadBalancingPolicy"
 }
 
-resource "aws_iam_role_policy_attachment" "cluster_AmazonEKSClusterPolicy" {
+resource "aws_iam_role_policy_attachment" "cluster_AmazonEKSNetworkingPolicy" {
   role       = aws_iam_role.cluster.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSNetworkingPolicy"
 }
