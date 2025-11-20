@@ -1,61 +1,57 @@
+terraform {
+  required_version = ">= 1.4.0"
+
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.0"
+    }
+  }
+}
+
 provider "aws" {
-  region  = "eu-west-2"
-  profile = "logging"
+  region = var.region
 }
 
-# Create VPC
 module "vpc" {
-  source   = "./vpc"
-  vpc_cidr = var.vpc_cidr
-  env      = var.env
-  az_count = var.az_count
+  source = "./modules/vpc"
+
+  name                 = var.cluster_name
+  vpc_cidr             = var.vpc_cidr
+  public_subnet_cidrs  = var.public_subnet_cidrs
+  private_subnet_cidrs = var.private_subnet_cidrs
+  tags                 = var.tags
 }
 
-# Create security Groups and ELBs.
-module "network" {
-  source         = "./network"
-  vpc_cidr_block = var.vpc_cidr
-  vpc_main_id    = module.vpc.vpc_id
-  public_subnets = module.vpc.public_subnet_ids
-  cluster-name   = var.env
+module "iam" {
+  source = "./modules/iam"
+
+  cluster_name = var.cluster_name
+  tags         = var.tags
 }
 
-# Create IAM roles and policies
-module "security" {
-  source = "./security"
+module "eks" {
+  source = "./modules/eks"
+
+  cluster_name       = var.cluster_name
+  subnet_ids         = module.vpc.private_subnet_ids
+  vpc_id             = module.vpc.vpc_id
+  vpc_cidr           = var.vpc_cidr
+  cluster_role_arn   = module.iam.cluster_role_arn
+  version            = var.eks_version
+  allow_external_ips = var.allow_external_ips
+  tags               = var.tags
 }
 
-# Create EKS Master Cluster
-module "cluster" {
-  source             = "./cluster"
-  vpc_main_id        = module.vpc.vpc_id
-  iam-master-cluster = module.security.iam-master-cluster
-  cluster-name       = var.env
-  master_sg_id       = module.network.master_sg_id
-  private_subnet_1   = module.vpc.private_subnet_1
-  private_subnet_2   = module.vpc.private_subnet_2
-}
+module "node_group" {
+  source = "./modules/node_group"
 
-# Create nodes
-module "nodes" {
-  source                            = "./nodes"
-  iam_instance_profile              = module.security.iam-instance_profile-node
-  kube-cluster-id                   = module.network.node_sg_id
-  vpc_main_id                       = module.vpc.vpc_id
-  az_count                          = var.az_count
-  eks-cluster-version               = module.cluster.eks-cluster-version
-  eks-cluster-endpoint              = module.cluster.eks-cluster-endpoint
-  eks-cluster-certificate_authority = module.cluster.eks-cluster-certificate_authority
-  node_key_pair                     = var.node_key_pair
-  cluster-name                      = var.env
-  private_subnet_1                  = module.vpc.private_subnet_1
-  private_subnet_2                  = module.vpc.private_subnet_2
+  cluster_name   = module.eks.cluster_name
+  subnet_ids     = module.vpc.private_subnet_ids
+  node_role_arn  = module.iam.node_role_arn
+  desired_size   = var.node_desired_size
+  min_size       = var.node_min_size
+  max_size       = var.node_max_size
+  instance_types = [var.node_instance_type]
+  tags           = var.tags
 }
-
-# Create EFS File system_packages
-module "efs" {
-  source        = "./efs"
-  kube_subnet_1 = module.vpc.private_subnet_1
-  kube_subnet_2 = module.vpc.private_subnet_2
-}
-

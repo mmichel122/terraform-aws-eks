@@ -1,3 +1,54 @@
+# ----------------------------------------
+# Terraform State & Backup Files
+# ----------------------------------------
 *.tfstate
-*.tfstate.backup
+*.tfstate.*
+*.tfvars.backup
+*.tfvars.json.backup
+*.backup
+*.bak
+
+# Local crash logs
+crash.log
+crash.*.log
+
+# Terraform variable overrides (user-specific)
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Sensitive variable files
+*.tfvars
+*.tfvars.json
+secret.auto.tfvars
+
+# Local-only config
 .terraform/
+.terraform.lock.hcl
+
+# Module & Provider plugin caches
+.terraform.tfstate
+.terraform/plugins/
+.terraform/providers/
+
+# Terraform plan output files
+*.plan
+
+# ----------------------------------------
+# VS Code
+# ----------------------------------------
+.vscode/
+*.code-workspace
+
+# IntelliJ / JetBrains
+.idea/
+*.iml
+
+# MacOS
+.DS_Store
+
+# Linux / general editor files
+*.swp
+*.swo
+*~
