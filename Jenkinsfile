@@ -47,7 +47,9 @@ pipeline {
         }
 
         stage('Approval') {
-            when { return !params.AUTO_APPROVE }
+            when {
+                expression { !params.AUTO_APPROVE }
+            }
             steps {
                 script {
                     timeout(time: 10, unit: 'MINUTES') {
