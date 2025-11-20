@@ -15,13 +15,6 @@ pipeline {
 
     stages {
 
-        stage('Checkout Repo') {
-            steps {
-                cleanWs()
-                git branch: 'main', url: 'git@mm:mmichel122/terraform-aws-eks.git'
-            }
-        }
-
         stage('Terraform Init') {
             steps {
                 withCredentials([[$class: 'AmazonWebServicesCredentialsBinding',
