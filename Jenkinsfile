@@ -2,6 +2,7 @@ pipeline {
     agent {
         docker {
             image 'hashicorp/terraform:1.9.0'
+            args '-u root:root --entrypoint=""'
         }
     }
 
@@ -23,6 +24,7 @@ pipeline {
             steps {
                 withCredentials([[$class: 'AmazonWebServicesCredentialsBinding',
                                   credentialsId: 'aws-creds']]) {
+
                     sh "terraform init -input=false"
                 }
             }
@@ -38,13 +40,14 @@ pipeline {
             steps {
                 withCredentials([[$class: 'AmazonWebServicesCredentialsBinding',
                                   credentialsId: 'aws-creds']]) {
+
                     sh "terraform plan -out=tfplan"
                 }
             }
         }
 
         stage('Approval') {
-            when { expression { return params.AUTO_APPROVE == false } }
+            when { return !params.AUTO_APPROVE }
             steps {
                 script {
                     timeout(time: 10, unit: 'MINUTES') {
@@ -58,6 +61,7 @@ pipeline {
             steps {
                 withCredentials([[$class: 'AmazonWebServicesCredentialsBinding',
                                   credentialsId: 'aws-creds']]) {
+
                     sh "terraform apply -auto-approve tfplan"
                 }
             }
