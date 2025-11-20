@@ -1,5 +1,9 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'hashicorp/terraform:1.9.0'
+        }
+    }
 
     environment {
         AWS_DEFAULT_REGION = "us-east-1"
@@ -19,10 +23,7 @@ pipeline {
             steps {
                 withCredentials([[$class: 'AmazonWebServicesCredentialsBinding',
                                   credentialsId: 'aws-creds']]) {
-
-                    sh """
-                        terraform init -input=false
-                    """
+                    sh "terraform init -input=false"
                 }
             }
         }
@@ -37,10 +38,7 @@ pipeline {
             steps {
                 withCredentials([[$class: 'AmazonWebServicesCredentialsBinding',
                                   credentialsId: 'aws-creds']]) {
-
-                    sh """
-                        terraform plan -out=tfplan
-                    """
+                    sh "terraform plan -out=tfplan"
                 }
             }
         }
@@ -50,7 +48,7 @@ pipeline {
             steps {
                 script {
                     timeout(time: 10, unit: 'MINUTES') {
-                        input(message: "Apply Terraform EKS deployment?")
+                        input "Apply Terraform EKS deployment?"
                     }
                 }
             }
@@ -60,10 +58,7 @@ pipeline {
             steps {
                 withCredentials([[$class: 'AmazonWebServicesCredentialsBinding',
                                   credentialsId: 'aws-creds']]) {
-
-                    sh """
-                        terraform apply -auto-approve tfplan
-                    """
+                    sh "terraform apply -auto-approve tfplan"
                 }
             }
         }
