@@ -53,7 +53,8 @@ resource "aws_subnet" "public" {
   tags = merge(
     var.tags,
     {
-      Name = "${var.name}-public-${count.index + 1}"
+      Name                     = "${var.name}-public-${count.index + 1}"
+      "kubernetes.io/role/elb" = "1"
     },
   )
 }
@@ -66,8 +67,8 @@ resource "aws_route_table_association" "public" {
 }
 
 resource "aws_eip" "nat" {
-  count = length(aws_subnet.public)
-  vpc   = true
+  count  = length(aws_subnet.public)
+  domain = "vpc"
 
   tags = merge(
     var.tags,
@@ -103,7 +104,8 @@ resource "aws_subnet" "private" {
   tags = merge(
     var.tags,
     {
-      Name = "${var.name}-private-${count.index + 1}"
+      Name                              = "${var.name}-private-${count.index + 1}"
+      "kubernetes.io/role/internal-elb" = "1"
     },
   )
 }

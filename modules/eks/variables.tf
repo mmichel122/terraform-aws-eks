@@ -23,7 +23,7 @@ variable "cluster_role_arn" {
   type        = string
 }
 
-variable "version" {
+variable "kubernetes_version" {
   description = "Kubernetes version for the EKS cluster."
   type        = string
 }

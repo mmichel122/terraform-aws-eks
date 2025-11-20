@@ -1,18 +1,3 @@
-terraform {
-  required_version = ">= 1.4.0"
-
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 5.0"
-    }
-  }
-}
-
-provider "aws" {
-  region = var.region
-}
-
 module "vpc" {
   source = "./modules/vpc"
 
@@ -34,11 +19,11 @@ module "eks" {
   source = "./modules/eks"
 
   cluster_name       = var.cluster_name
-  subnet_ids         = module.vpc.private_subnet_ids
+  subnet_ids         = concat(module.vpc.public_subnet_ids, module.vpc.private_subnet_ids)
   vpc_id             = module.vpc.vpc_id
   vpc_cidr           = var.vpc_cidr
   cluster_role_arn   = module.iam.cluster_role_arn
-  version            = var.eks_version
+  kubernetes_version = var.eks_version
   allow_external_ips = var.allow_external_ips
   tags               = var.tags
 }
